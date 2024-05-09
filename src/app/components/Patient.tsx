@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import ActionButton from "./ActionButton/ActionButton";
 import Modal from "./Modal/Modal";
+import PatientType from "./PatientType/PatientType";
 
 const Patient = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,20 +37,7 @@ const Patient = () => {
         cancelTitle="Cancel"
       >
         {/* Content of the modal goes here */}
-        <p>This is the content of the modal.</p>
-        <p>This is the content of the modal.</p>
-
-        <p>This is the content of the modal.</p>
-
-        <p>This is the content of the modal.</p>
-
-        <p>This is the content of the modal.</p>
-
-        <p>This is the content of the modal.</p>
-
-        <p>This is the content of the modal.</p>
-
-        <p>This is the content of the modal.</p>
+        <PatientType />
       </Modal>
     </div>
   );
