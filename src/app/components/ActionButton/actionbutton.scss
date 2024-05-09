@@ -1,0 +1,26 @@
+.action-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 8px, 12px, 8px, 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(187, 163, 228, 0.3) 0%,
+    rgba(237, 161, 151, 0.3) 100%
+  );
+  cursor: pointer;
+
+  .action-info {
+    display: flex;
+    align-items: center;
+  }
+  .action-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 16px;
+    text-align: left;
+    color: #000000;
+  }
+}
