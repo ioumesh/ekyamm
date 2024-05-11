@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Modal.scss"; // Import the SCSS file for styling
+import { Button } from "antd";
 
 interface ModalProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({
       <div className="modal">
         <div className="modal-header">
           <button className="back-button" onClick={onClose}>
-            <img src="/images/arrow_back.png" alt="arrow"/>
+            <img src="/images/arrow_back.png" alt="arrow" />
           </button>
           <h2 className="modal-title">{title}</h2>
         </div>

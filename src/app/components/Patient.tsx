@@ -2,7 +2,12 @@
 import React, { useState } from "react";
 import ActionButton from "./ActionButton/ActionButton";
 import Modal from "./Modal/Modal";
-import PatientType from "./PatientType/PatientType";
+// import PatientType from "./PatientType/PatientType";
+import { message } from "antd";
+// import { FormContext } from "antd/es/form/context";
+import PatientForm from "./PatientType/PatientForm";
+import AddPatientForm from "./PatientForm/PatientForm1";
+// import PatientDetailsForm from "./PatientType/PatientDetails";
 
 const Patient = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,12 +22,11 @@ const Patient = () => {
 
   const handleCancel = () => {
     setIsOpen(false);
-    // Handle cancel action here
   };
 
-  const handleSubmit = () => {
-    setIsOpen(false);
-    // Handle submit action here
+  const handleSubmit = (data: any) => {
+    // Handle form submission here
+    console.log("Form submitted:", data);
   };
   return (
     <div className="flex w-full items-center justify-center">
@@ -36,8 +40,7 @@ const Patient = () => {
         actionTitle="Send Invite"
         cancelTitle="Cancel"
       >
-        {/* Content of the modal goes here */}
-        <PatientType />
+        <AddPatientForm />
       </Modal>
     </div>
   );

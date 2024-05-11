@@ -1,0 +1,12 @@
+.action-tab {
+  width: 100%;
+  background-color: #fff;
+  opacity: 50%;
+  padding: 16px;
+  border-radius: 12px;
+  .action-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
