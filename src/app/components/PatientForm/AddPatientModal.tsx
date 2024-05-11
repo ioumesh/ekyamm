@@ -1,6 +1,6 @@
+"use client";
 import React, { useState } from "react";
 import {
-  Modal,
   Form,
   Input,
   Radio,
@@ -13,6 +13,9 @@ import {
   AutoComplete,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import ActionButton from "../ActionButton/ActionButton";
+import Modal from "../Modal/Modal";
+import ActionTab from "../ActionTab/ActionTab";
 
 const { TextArea } = Input;
 
@@ -53,7 +56,9 @@ const AddPatientModal: React.FC = () => {
   const handleCancel = () => {
     setVisible(false);
   };
-
+  const closeModal = () => {
+    setVisible(false);
+  };
   const handleSendInvite = () => {
     form
       .validateFields()
@@ -61,7 +66,7 @@ const AddPatientModal: React.FC = () => {
         // Handle form submission
         message.success("Form submitted");
         setVisible(false);
-        console.log(values)
+        console.log(values);
       })
       .catch((error) => {
         console.error("Form validation failed:", error);
@@ -110,18 +115,16 @@ const AddPatientModal: React.FC = () => {
 
   return (
     <>
+      <ActionButton title="Add Patient" handler={showModal} />
+
       <Modal
         title="Add Patient"
-        visible={visible}
+        actionTitle="Send Invite"
+        cancelTitle="Cancel"
+        isOpen={visible}
+        onClose={closeModal}
         onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="sendInvite" type="primary" onClick={handleSendInvite}>
-            Send Invite
-          </Button>,
-        ]}
+        onSubmit={handleSendInvite}
       >
         <Form form={form} layout="vertical" onFinish={handleSendInvite}>
           <Form.Item
@@ -207,159 +210,148 @@ const AddPatientModal: React.FC = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item name="onlineSessionLink" label="Online Session Link">
-            <Input onChange={(e) => setOnlineSessionLink(e.target.value)} />
-          </Form.Item>
-          <Form.Item
-            name="scheduleSession"
-            valuePropName="checked"
-            initialValue={false}
-          >
-            <Checkbox>Schedule Session</Checkbox>
-          </Form.Item>
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currentValues) =>
-              prevValues.scheduleSession !== currentValues.scheduleSession
-            }
-          >
-            {({ getFieldValue }) => {
-              return getFieldValue("scheduleSession") ? (
-                <>
-                  <Form.Item name="sessionType" initialValue="inPerson">
-                    <Radio.Group>
-                      <Radio value="inPerson">In Person</Radio>
-                      <Radio value="online">Online</Radio>
-                    </Radio.Group>
-                  </Form.Item>
-                  <Form.Item
-                    name="sessionDateTime"
-                    label="Session Date"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please select session date and time",
-                      },
-                    ]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-                  <Form.Item
-                    name="sessionTime"
-                    label="Session Time"
-                    rules={[
-                      { required: true, message: "Please select session time" },
-                    ]}
-                  >
-                    <TimePicker />
-                  </Form.Item>
-                  <Form.Item
-                    name="practitionerName"
-                    label="Practitioner Name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter practitioner name",
-                      },
-                    ]}
-                  >
-                    <AutoComplete
-                      options={doctorOptions}
-                      onSelect={handleDoctorSelect}
-                      dropdownMatchSelectWidth={false}
-                      dropdownClassName="doctor-autocomplete-dropdown"
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name="sessionDetails"
-                    label="Session Details"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter session details",
-                      },
-                    ]}
-                  >
-                    <TextArea />
-                  </Form.Item>
-                </>
-              ) : null;
-            }}
-          </Form.Item>
-          {showPrescriptionUpload && (
+
+          <ActionTab title="Schedule Session">
             <>
+              <Form.Item name="sessionType" initialValue="inPerson">
+                <Radio.Group>
+                  <Radio value="inPerson">In Person</Radio>
+                  <Radio value="online">Online</Radio>
+                </Radio.Group>
+              </Form.Item>
               <Form.Item
-                name="prescriptionDate"
-                label="Prescription Date"
+                name="sessionDateTime"
+                label="Session Date"
                 rules={[
                   {
                     required: true,
-                    message: "Please select prescription date",
+                    message: "Please select session date and time",
                   },
                 ]}
               >
                 <DatePicker />
               </Form.Item>
+
               <Form.Item
-                name="prescriptionImage"
-                label="Prescription Image"
+                name="sessionTime"
+                label="Session Time"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please upload prescription image",
-                  },
+                  { required: true, message: "Please select session time" },
                 ]}
               >
-                <Upload
-                  showUploadList={false}
-                  onChange={handleImageUpload}
-                  beforeUpload={() => false} // Prevent default upload behavior
-                >
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      border: "1px solid #d9d9d9",
-                      borderRadius: "4px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      overflow: "hidden",
-                      margin: "0 auto",
-                      marginBottom: "16px",
-                    }}
-                  >
-                    {imagePreview ? (
-                      <img
-                        src={imagePreview}
-                        alt="Prescription"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <UploadOutlined
-                        style={{ fontSize: "32px", color: "#1890ff" }}
-                      />
-                    )}
-                  </div>
-                </Upload>
+                <TimePicker />
+              </Form.Item>
+              <Form.Item name="onlineSessionLink" label="Online Session Link">
+                <Input onChange={(e) => setOnlineSessionLink(e.target.value)} />
               </Form.Item>
               <Form.Item
-                name="nextFollowUpDate"
-                label="Next Follow Up Date"
+                name="practitionerName"
+                label="Practitioner Name"
                 rules={[
                   {
                     required: true,
-                    message: "Please select next follow up date",
+                    message: "Please enter practitioner name",
                   },
                 ]}
               >
-                <DatePicker />
+                <AutoComplete
+                  options={doctorOptions}
+                  onSelect={handleDoctorSelect}
+                  dropdownMatchSelectWidth={false}
+                  dropdownClassName="doctor-autocomplete-dropdown"
+                />
+              </Form.Item>
+              <Form.Item
+                name="sessionDetails"
+                label="Session Details"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter session details",
+                  },
+                ]}
+              >
+                <TextArea />
               </Form.Item>
             </>
+          </ActionTab>
+
+          {showPrescriptionUpload && (
+            <ActionTab title="Upload Old Prescription">
+              <>
+                <Form.Item
+                  name="prescriptionDate"
+                  label="Prescription Date"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select prescription date",
+                    },
+                  ]}
+                >
+                  <DatePicker />
+                </Form.Item>
+                <Form.Item
+                  name="prescriptionImage"
+                  label="Prescription Image"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please upload prescription image",
+                    },
+                  ]}
+                >
+                  <Upload
+                    showUploadList={false}
+                    onChange={handleImageUpload}
+                    beforeUpload={() => false} // Prevent default upload behavior
+                  >
+                    <div
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        border: "1px solid #d9d9d9",
+                        borderRadius: "4px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        overflow: "hidden",
+                        margin: "0 auto",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      {imagePreview ? (
+                        <img
+                          src={imagePreview}
+                          alt="Prescription"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <UploadOutlined
+                          style={{ fontSize: "32px", color: "#1890ff" }}
+                        />
+                      )}
+                    </div>
+                  </Upload>
+                </Form.Item>
+                <Form.Item
+                  name="nextFollowUpDate"
+                  label="Next Follow Up Date"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select next follow up date",
+                    },
+                  ]}
+                >
+                  <DatePicker />
+                </Form.Item>
+              </>
+            </ActionTab>
           )}
         </Form>
       </Modal>

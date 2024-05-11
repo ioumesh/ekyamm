@@ -10,8 +10,8 @@ const ActionTab: React.FC<ActionTabProps> = ({ children, title }) => {
     setShow(!show);
   };
   return (
-    <div onClick={handleShow} className="action-tab">
-      <div className="action-header">
+    <div className="action-tab">
+      <div onClick={handleShow} className="action-header">
         <h2>{title}</h2>
         {show ? (
           <img src="/images/up-arrow.png" alt="arrow" />

@@ -1,10 +1,9 @@
-import Image from "next/image";
-import Patient from "./components/Patient";
+import AddPatientModal from "./components/PatientForm/AddPatientModal";
 
 export default function Home() {
   return (
-   <div className="">
-    <Patient/>
-   </div>
+    <div className="">
+      <AddPatientModal />
+    </div>
   );
 }
