@@ -8,7 +8,6 @@ import {
   DatePicker,
   TimePicker,
   Upload,
-  Button,
   message,
   AutoComplete,
 } from "antd";
@@ -20,7 +19,6 @@ import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 
 const { TextArea } = Input;
 
-// Sample doctor data
 const doctorData = [
   {
     id: 1,
@@ -50,41 +48,37 @@ const AddPatientModal: React.FC = () => {
     string | undefined
   >(undefined);
 
-  const showModal = () => {
-    setVisible(true);
-  };
+  const showModal = () => setVisible(true);
 
   const handleCancel = () => {
     setVisible(false);
-  };
-  const closeModal = () => {
-    setVisible(false);
-  };
-  const handleSendInvite = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        // Handle form submission
-        message.success("Patient invited successfully.");
-        setVisible(false);
-        console.log(values);
-      })
-      .catch((error) => {
-        message.error("Fill patient details.");
-
-        console.error("Form validation failed:", error);
-      });
+    form.resetFields();
+    setImagePreview(undefined);
   };
 
-  const handleImageUpload = (info: any) => {
-    if (info.file.status === "done") {
-      // Get the uploaded image URL
-      const imageUrl = info.file.response.url;
-      setImagePreview(imageUrl);
+  const handleSendInvite = async () => {
+    try {
+      const values = await form.validateFields();
+      message.success("Patient invited successfully.");
+      setVisible(false);
+      console.log(values);
+      form.resetFields();
+      setImagePreview(undefined);
+    } catch (error) {
+      message.error("Fill patient details.");
+      console.error("Form validation failed:", error);
     }
   };
 
-  // Doctor option data for AutoComplete
+  const handleImageUpload = (info: any) => {
+    const file = info.fileList[0]?.originFileObj;
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const doctorOptions = doctorData.map((doctor) => ({
     label: (
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -104,7 +98,7 @@ const AddPatientModal: React.FC = () => {
         </div>
       </div>
     ),
-    value: doctor.name, // Value to display in the input field
+    value: doctor.name,
     doctor,
   }));
 
@@ -116,14 +110,11 @@ const AddPatientModal: React.FC = () => {
     });
   };
 
-  // Function to fill WhatsApp number when "Same as Primary Number" checkbox is checked
   const handlePrimaryNumberChange = (e: CheckboxChangeEvent) => {
-    if (e.target.checked) {
-      const primaryNumberValue = form.getFieldValue("primaryNumber");
-      form.setFieldsValue({ whatsappNumber: primaryNumberValue });
-    } else {
-      form.setFieldsValue({ whatsappNumber: undefined });
-    }
+    const primaryNumberValue = e.target.checked
+      ? form.getFieldValue("primaryNumber")
+      : undefined;
+    form.setFieldsValue({ whatsappNumber: primaryNumberValue });
   };
 
   return (
@@ -135,7 +126,7 @@ const AddPatientModal: React.FC = () => {
         actionTitle="Send Invite"
         cancelTitle="Cancel"
         isOpen={visible}
-        onClose={closeModal}
+        onClose={handleCancel}
         onCancel={handleCancel}
         onSubmit={handleSendInvite}
       >
@@ -170,7 +161,7 @@ const AddPatientModal: React.FC = () => {
               <Upload
                 showUploadList={false}
                 onChange={handleImageUpload}
-                beforeUpload={() => false} // Prevent default upload behavior
+                beforeUpload={() => false}
               >
                 <div
                   style={{
@@ -268,7 +259,6 @@ const AddPatientModal: React.FC = () => {
               >
                 <DatePicker />
               </Form.Item>
-
               <Form.Item
                 name="sessionTime"
                 label="Session Time Slot"
@@ -285,18 +275,13 @@ const AddPatientModal: React.FC = () => {
                 name="practitionerName"
                 label="Enter Practitioner Name"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please enter practitioner name",
-                  },
+                  { required: true, message: "Please enter practitioner name" },
                 ]}
               >
                 <AutoComplete
                   placeholder="Select or enter Psychiatrist / Therapist name"
                   options={doctorOptions}
                   onSelect={handleDoctorSelect}
-                  // dropdownMatchSelectWidth={false}
-                  // dropdownClassName="doctor-autocomplete-dropdown"
                 />
               </Form.Item>
               <Form.Item
@@ -314,12 +299,7 @@ const AddPatientModal: React.FC = () => {
                 <Form.Item
                   name="prescriptionDate"
                   label="Date"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please date",
-                    },
-                  ]}
+                  rules={[{ required: true, message: "Please date" }]}
                 >
                   <DatePicker />
                 </Form.Item>
@@ -336,7 +316,7 @@ const AddPatientModal: React.FC = () => {
                   <Upload
                     showUploadList={false}
                     onChange={handleImageUpload}
-                    beforeUpload={() => false} // Prevent default upload behavior
+                    beforeUpload={() => false}
                   >
                     <div
                       style={{
