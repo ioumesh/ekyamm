@@ -37,9 +37,12 @@ const doctorData = [
 const AddPatientModal: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
-  const [imagePreview, setImagePreview] = useState<string | undefined>(
-    undefined
-  );
+  const [patientImagePreview, setPatientImagePreview] = useState<
+    string | undefined
+  >(undefined);
+  const [prescriptionImagePreview, setPrescriptionImagePreview] = useState<
+    string | undefined
+  >(undefined);
   const [showPrescriptionUpload, setShowPrescriptionUpload] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<string | undefined>(
     undefined
@@ -53,7 +56,8 @@ const AddPatientModal: React.FC = () => {
   const handleCancel = () => {
     setVisible(false);
     form.resetFields();
-    setImagePreview(undefined);
+    setPatientImagePreview(undefined);
+    setPrescriptionImagePreview(undefined);
   };
 
   const handleSendInvite = async () => {
@@ -63,19 +67,33 @@ const AddPatientModal: React.FC = () => {
       setVisible(false);
       console.log(values);
       form.resetFields();
-      setImagePreview(undefined);
+      setPatientImagePreview(undefined);
+      setPrescriptionImagePreview(undefined);
     } catch (error) {
       message.error("Fill patient details.");
       console.error("Form validation failed:", error);
     }
   };
 
-  const handleImageUpload = (info: any) => {
-    const file = info.fileList[0]?.originFileObj;
-    if (file) {
+  const handleImageUpload = (info: any, field: string) => {
+    const fileList = info.fileList;
+    const latestFile = fileList[fileList.length - 1]?.originFileObj;
+    if (latestFile) {
       const reader = new FileReader();
-      reader.onload = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
+      reader.onload = () => {
+        if (field === "patientImage") {
+          setPatientImagePreview(reader.result as string);
+        } else if (field === "prescriptionImage") {
+          setPrescriptionImagePreview(reader.result as string);
+        }
+      };
+      reader.readAsDataURL(latestFile);
+    } else {
+      if (field === "patientImage") {
+        setPatientImagePreview(undefined);
+      } else if (field === "prescriptionImage") {
+        setPrescriptionImagePreview(undefined);
+      }
     }
   };
 
@@ -160,7 +178,7 @@ const AddPatientModal: React.FC = () => {
             >
               <Upload
                 showUploadList={false}
-                onChange={handleImageUpload}
+                onChange={(info) => handleImageUpload(info, "patientImage")}
                 beforeUpload={() => false}
               >
                 <div
@@ -178,9 +196,9 @@ const AddPatientModal: React.FC = () => {
                     background: "#D9D9D9",
                   }}
                 >
-                  {imagePreview ? (
+                  {patientImagePreview ? (
                     <img
-                      src={imagePreview}
+                      src={patientImagePreview}
                       alt="Patient"
                       style={{
                         width: "100%",
@@ -315,7 +333,9 @@ const AddPatientModal: React.FC = () => {
                 >
                   <Upload
                     showUploadList={false}
-                    onChange={handleImageUpload}
+                    onChange={(info) =>
+                      handleImageUpload(info, "prescriptionImage")
+                    }
                     beforeUpload={() => false}
                   >
                     <div
@@ -332,9 +352,9 @@ const AddPatientModal: React.FC = () => {
                         marginBottom: "16px",
                       }}
                     >
-                      {imagePreview ? (
+                      {prescriptionImagePreview ? (
                         <img
-                          src={imagePreview}
+                          src={prescriptionImagePreview}
                           alt="Prescription"
                           style={{
                             width: "100%",
