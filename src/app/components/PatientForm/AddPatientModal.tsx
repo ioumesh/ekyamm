@@ -287,6 +287,7 @@ const AddPatientModal: React.FC = () => {
               >
                 <TimePicker />
               </Form.Item>
+              {/* online session link */}
               <Form.Item name="onlineSessionLink" label="Online Session Link">
                 <Input onChange={(e) => setOnlineSessionLink(e.target.value)} />
               </Form.Item>
