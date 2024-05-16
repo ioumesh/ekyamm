@@ -21,7 +21,7 @@ const Modal: React.FC<ModalProps> = ({
   onCancel,
   onSubmit,
   cancelTitle,
-  actionTitle,
+  actionTitle,  
 }) => {
   return (
     <div className={`modal-overlay ${isOpen ? "open" : ""} `}>

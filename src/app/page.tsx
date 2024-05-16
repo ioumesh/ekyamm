@@ -2,6 +2,7 @@
 import React from "react";
 import AddPatientModal from "./components/PatientForm/AddPatientModal";
 import { useDeviceType } from "./hooks/useDeviceType";
+import AddPatientDesktopModal from "./components/PatientForm/AddPatientDesktopModal";
 
 export default function Home() {
   const { isMobile, isDesktop } = useDeviceType();
@@ -17,7 +18,7 @@ export default function Home() {
       <h1>Ekyamm</h1>
 
       {isMobile && <AddPatientModal />}
-      {isDesktop && <p>You are on a desktop device</p>}
+      {isDesktop && <AddPatientDesktopModal />}
     </div>
   );
 }

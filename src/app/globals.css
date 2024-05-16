@@ -7,3 +7,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.ant-radio-checked .ant-radio-inner {
+  border-color: #141414;
+  background-color: #171718;
+}
+.ant-radio-inner {
+  border-color: gray !important;
+  background-color:transparent;
+}

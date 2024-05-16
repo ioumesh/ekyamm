@@ -10,7 +10,6 @@ import {
   Upload,
   message,
   AutoComplete,
-  ConfigProvider,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import ActionButton from "../ActionButton/ActionButton";
@@ -35,7 +34,7 @@ const doctorData = [
   },
 ];
 
-const AddPatientModal: React.FC = () => {
+const AddPatientDesktopModal: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [patientImagePreview, setPatientImagePreview] = useState<
@@ -138,7 +137,9 @@ const AddPatientModal: React.FC = () => {
 
   return (
     <>
-      <ActionButton title="Add Patient" handler={showModal} />
+      <div style={{ width: "300px" }}>
+        <ActionButton title="Add Patient" handler={showModal} />
+      </div>
 
       <Modal
         title="Add Patient"
@@ -294,10 +295,7 @@ const AddPatientModal: React.FC = () => {
                 name="practitionerName"
                 label="Enter Practitioner Name"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please enter practitioner name",
-                  },
+                  { required: true, message: "Please enter practitioner name" },
                 ]}
               >
                 <AutoComplete
@@ -395,4 +393,4 @@ const AddPatientModal: React.FC = () => {
   );
 };
 
-export default AddPatientModal;
+export default AddPatientDesktopModal;
