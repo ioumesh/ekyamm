@@ -13,9 +13,10 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import ActionButton from "../ActionButton/ActionButton";
-import Modal from "../Modal/Modal";
 import ActionTab from "../ActionTab/ActionTab";
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
+import WebModal from "../Modal/WebModal";
+import "./patient.scss";
 
 const { TextArea } = Input;
 
@@ -31,6 +32,16 @@ const doctorData = [
     name: "Dr. Jane Smith",
     mobile: "9876543210",
     profilePic: "images/doctor-2.png",
+  },
+];
+const clinicData = [
+  {
+    id: 1,
+    city: "Bandra",
+  },
+  {
+    id: 2,
+    city: "Delhi",
   },
 ];
 
@@ -120,6 +131,17 @@ const AddPatientDesktopModal: React.FC = () => {
     doctor,
   }));
 
+  const clinicOptions = clinicData.map((clinic) => ({
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div>
+          <div>{clinic.city}</div>
+        </div>
+      </div>
+    ),
+    value: clinic.city,
+  }));
+
   const handleDoctorSelect = (value: string, option: any) => {
     setSelectedDoctor(value);
     const { doctor } = option;
@@ -127,7 +149,9 @@ const AddPatientDesktopModal: React.FC = () => {
       practitionerName: `${doctor.name} - ${doctor.mobile}`,
     });
   };
-
+  const handleClinicFSelect = () => {
+    //cliniclogic here
+  };
   const handlePrimaryNumberChange = (e: CheckboxChangeEvent) => {
     const primaryNumberValue = e.target.checked
       ? form.getFieldValue("primaryNumber")
@@ -141,7 +165,7 @@ const AddPatientDesktopModal: React.FC = () => {
         <ActionButton title="Add Patient" handler={showModal} />
       </div>
 
-      <Modal
+      <WebModal
         title="Add Patient"
         actionTitle="Send Invite"
         cancelTitle="Cancel"
@@ -151,178 +175,244 @@ const AddPatientDesktopModal: React.FC = () => {
         onSubmit={handleSendInvite}
       >
         <Form form={form} layout="vertical" onFinish={handleSendInvite}>
-          <Form.Item
-            name="patientType"
-            initialValue="walking"
-            rules={[{ required: true, message: "Please select patient type" }]}
-          >
-            <Radio.Group
-              onChange={(e) =>
-                setShowPrescriptionUpload(e.target.value === "existing")
-              }
-            >
-              <Radio value="walking">Walk-in Patient</Radio>
-              <Radio value="existing">Existing Patient</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Form.Item
-              name="patientImage"
-              rules={[
-                { required: true, message: "Please upload patient image" },
-              ]}
-            >
-              <Upload
-                showUploadList={false}
-                onChange={(info) => handleImageUpload(info, "patientImage")}
-                beforeUpload={() => false}
-              >
-                <div
-                  style={{
-                    width: "80px",
-                    height: "100px",
-                    border: "1px solid #d9d9d9",
-                    borderRadius: "10px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
-                    margin: "0 auto",
-                    marginBottom: "16px",
-                    background: "#D9D9D9",
-                  }}
-                >
-                  {patientImagePreview ? (
-                    <img
-                      src={patientImagePreview}
-                      alt="Patient"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <img src="images/person.png" alt="person" />
-                  )}
-                </div>
-              </Upload>
-            </Form.Item>
-          </div>
-          <Form.Item
-            name="patientName"
-            label="Patient Name"
-            rules={[{ required: true, message: "Please enter patient name" }]}
-          >
-            <Input placeholder="Enter patient name" />
-          </Form.Item>
-          <Form.Item
-            name="primaryNumber"
-            label="Primary Mobile Number *"
-            rules={[
-              { required: true, message: "Please enter primary number" },
-              { len: 10, message: "Primary number must be 10 digits" },
-            ]}
-          >
-            <Input placeholder="Enter mobile number" />
-          </Form.Item>
-          <Form.Item
-            name="whatsappNumber"
-            label="Whatsapp Number *"
-            rules={[
-              { required: true, message: "Please enter Whatsapp number" },
-              { len: 10, message: "whatsapp number must be 10 digits" },
-            ]}
-          >
-            <Input placeholder="Enter whatsapp number" />
-          </Form.Item>
-          <Form.Item name="sameAsPrimary" valuePropName="checked">
-            <Checkbox onChange={handlePrimaryNumberChange}>
-              Same as Mobile Number
-            </Checkbox>
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email address *"
-            rules={[{ required: true, message: "Please enter email" }]}
-          >
-            <Input placeholder="Enter email address" />
-          </Form.Item>
-
-          <ActionTab title="Schedule Session">
-            <>
+          <div className="patient-details-container">
+            <div>
               <Form.Item
-                name="sessionType"
-                label="Session Type"
-                initialValue="inPerson"
+                name="patientType"
+                initialValue="walking"
+                rules={[
+                  { required: true, message: "Please select patient type" },
+                ]}
               >
-                <Radio.Group>
-                  <Radio value="inPerson">In-Person</Radio>
-                  <Radio value="online">Online</Radio>
+                <Radio.Group
+                  onChange={(e) =>
+                    setShowPrescriptionUpload(e.target.value === "existing")
+                  }
+                >
+                  <Radio value="walking">Walk-in Patient</Radio>
+                  <Radio value="existing">Existing Patient</Radio>
                 </Radio.Group>
               </Form.Item>
               <Form.Item
-                name="sessionDateTime"
-                label="Session Date"
+                name="patientName"
+                label="Patient Name"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please select session date and time",
-                  },
+                  { required: true, message: "Please enter patient name" },
                 ]}
               >
-                <DatePicker />
+                <Input placeholder="Enter patient name" />
               </Form.Item>
+            </div>
+            <div>
               <Form.Item
-                name="sessionTime"
-                label="Session Time Slot"
+                name="patientImage"
                 rules={[
-                  { required: true, message: "Please select session time" },
+                  { required: true, message: "Please upload patient image" },
                 ]}
               >
-                <TimePicker />
+                <Upload
+                  showUploadList={false}
+                  onChange={(info) => handleImageUpload(info, "patientImage")}
+                  beforeUpload={() => false}
+                >
+                  <div
+                    style={{
+                      width: "80px",
+                      height: "100px",
+                      border: "1px solid #d9d9d9",
+                      borderRadius: "10px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      overflow: "hidden",
+                      margin: "0 auto",
+                      marginBottom: "16px",
+                      background: "#D9D9D9",
+                    }}
+                  >
+                    {patientImagePreview ? (
+                      <img
+                        src={patientImagePreview}
+                        alt="Patient"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <img src="images/person.png" alt="person" />
+                    )}
+                  </div>
+                </Upload>
               </Form.Item>
-              <Form.Item name="onlineSessionLink" label="Online Session Link">
-                <Input onChange={(e) => setOnlineSessionLink(e.target.value)} />
-              </Form.Item>
-              <Form.Item
-                name="practitionerName"
-                label="Enter Practitioner Name"
-                rules={[
-                  { required: true, message: "Please enter practitioner name" },
-                ]}
-              >
-                <AutoComplete
-                  placeholder="Select or enter Psychiatrist / Therapist name"
-                  options={doctorOptions}
-                  onSelect={handleDoctorSelect}
-                />
-              </Form.Item>
-              <Form.Item
-                name="sessionDetails"
-                label="Session Details (Optional"
-              >
-                <TextArea placeholder="Enter session details here" />
-              </Form.Item>
+            </div>
+          </div>
+          <div className="patient-whatsapp-wrapper">
+            <Form.Item name="sameAsPrimary" valuePropName="checked">
+              <Checkbox onChange={handlePrimaryNumberChange}>
+                Same as Mobile Number
+              </Checkbox>
+            </Form.Item>
+          </div>
+
+          <div className="patient-contact-container">
+            <Form.Item
+              name="primaryNumber"
+              label="Primary Mobile Number *"
+              rules={[
+                { required: true, message: "Please enter primary number" },
+                { len: 10, message: "Primary number must be 10 digits" },
+              ]}
+            >
+              <Input placeholder="Enter mobile number" />
+            </Form.Item>
+
+            <Form.Item
+              name="whatsappNumber"
+              label="Whatsapp Number *"
+              rules={[
+                { required: true, message: "Please enter Whatsapp number" },
+                { len: 10, message: "whatsapp number must be 10 digits" },
+              ]}
+            >
+              <Input placeholder="Enter whatsapp number" />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email address *"
+              rules={[{ required: true, message: "Please enter email" }]}
+            >
+              <Input placeholder="Enter email address" />
+            </Form.Item>
+          </div>
+
+          <ActionTab title="Schedule Session">
+            <>
+              <div className="schedule-container">
+                <div>
+                  <Form.Item
+                    name="sessionType"
+                    label="Session Type"
+                    initialValue="inPerson"
+                  >
+                    <Radio.Group>
+                      <Radio value="inPerson">In-Person</Radio>
+                      <Radio value="online">Online</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                  <Form.Item
+                    name="onlineSessionLink"
+                    label="Online Session Link"
+                  >
+                    <Input
+                      onChange={(e) => setOnlineSessionLink(e.target.value)}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="practitionerName"
+                    label="Enter Practitioner Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter practitioner name",
+                      },
+                    ]}
+                  >
+                    <AutoComplete
+                      placeholder="Select or enter Psychiatrist / Therapist name"
+                      options={doctorOptions}
+                      onSelect={handleDoctorSelect}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="psychiatristemail"
+                    label="Email address *"
+                    rules={[{ required: true, message: "Please enter email" }]}
+                  >
+                    <Input placeholder="Enter email address of Psychiatrist " />
+                  </Form.Item>
+                </div>
+                <div>
+                  <div className="session-slot">
+                    <Form.Item
+                      name="sessionDateTime"
+                      label="Session Date"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select session date and time",
+                        },
+                      ]}
+                    >
+                      <DatePicker />
+                    </Form.Item>
+                    <Form.Item
+                      name="sessionTime"
+                      label="Session Time Slot"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select session time",
+                        },
+                      ]}
+                    >
+                      <TimePicker />
+                    </Form.Item>
+                  </div>
+                  <Form.Item
+                    name="clinicLocation"
+                    label="Clinic Location"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please Select or enter Clinic Location",
+                      },
+                    ]}
+                  >
+                    <AutoComplete
+                      placeholder="Select or enter Clinic Location"
+                      options={clinicOptions}
+                      onSelect={handleClinicFSelect}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="sessionDetails"
+                    label="Session Details (Optional"
+                  >
+                    <TextArea placeholder="Enter session details here" />
+                  </Form.Item>
+                </div>
+              </div>
             </>
           </ActionTab>
 
           {showPrescriptionUpload && (
             <ActionTab title="Upload Old Prescription">
               <>
-                <Form.Item
-                  name="prescriptionDate"
-                  label="Date"
-                  rules={[{ required: true, message: "Please date" }]}
-                >
-                  <DatePicker />
-                </Form.Item>
+                <div className="date-container">
+                  <Form.Item
+                    name="prescriptionDate"
+                    label="Date"
+                    rules={[{ required: true, message: "Please date" }]}
+                  >
+                    <DatePicker />
+                  </Form.Item>
+                  <Form.Item
+                    name="nextFollowUpDate"
+                    label="Next Follow-up Date"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select next follow up date",
+                      },
+                    ]}
+                  >
+                    <DatePicker />
+                  </Form.Item>
+                </div>
+
                 <Form.Item
                   name="prescriptionImage"
                   label="Prescription"
@@ -342,7 +432,7 @@ const AddPatientDesktopModal: React.FC = () => {
                   >
                     <div
                       style={{
-                        width: "100px",
+                        width: "300px",
                         height: "100px",
                         border: "1px solid #d9d9d9",
                         borderRadius: "4px",
@@ -372,23 +462,11 @@ const AddPatientDesktopModal: React.FC = () => {
                     </div>
                   </Upload>
                 </Form.Item>
-                <Form.Item
-                  name="nextFollowUpDate"
-                  label="Next Follow-up Date"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select next follow up date",
-                    },
-                  ]}
-                >
-                  <DatePicker />
-                </Form.Item>
               </>
             </ActionTab>
           )}
         </Form>
-      </Modal>
+      </WebModal>
     </>
   );
 };

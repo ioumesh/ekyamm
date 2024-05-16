@@ -1,0 +1,33 @@
+.patient-details-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.patient-whatsapp-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.patient-contact-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.schedule-container {
+  display: flex;
+  gap: 3rem;
+  justify-content: space-between;
+}
+.session-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.date-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

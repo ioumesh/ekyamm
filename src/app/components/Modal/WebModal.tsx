@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./modal.scss";
+import "./webmodal.scss";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ interface ModalProps {
   actionTitle: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const WebModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -23,13 +23,17 @@ const Modal: React.FC<ModalProps> = ({
   actionTitle,
 }) => {
   return (
-    <div onClick={onClose} className={`modal-overlay ${isOpen ? "open" : ""} `}>
+    <div
+      onClick={onClose}
+      className={`modal-overlay-desktop ${isOpen ? "open" : ""} `}
+    >
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <button className="back-button" onClick={onClose}>
-            <img src="/images/arrow_back.png" alt="arrow" />
-          </button>
+          <img src="/images/user.png" alt="arrow" />
           <h2 className="modal-title">{title}</h2>
+          <button className="back-button" onClick={onClose}>
+            <img src="/images/close.png" alt="arrow" />
+          </button>
         </div>
         <div className="modal-content">{children}</div>
         <div className="modal-footer">
@@ -45,4 +49,4 @@ const Modal: React.FC<ModalProps> = ({
   );
 };
 
-export default Modal;
+export default WebModal;
